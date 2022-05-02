@@ -9,19 +9,19 @@ on:
         default: master
   schedule:
     # 7:30 AM UTC = 3:30 AM EDT
-    - cron: '30 7 * * *'               
+    - cron: '30 7 * * *'
   pull_request:
     branches:
       - master
       - main
-    types: 
+    types:
       - opened
       - synchronize
       - reopened
       - ready_for_review
-    paths-ignore: 
+    paths-ignore:
       - docs/**
-      - README.md     
+      - README.md
       - CHANGELOG.md
 
 concurrency:
@@ -45,7 +45,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get Cypress Runner
-        run: git clone https://github.com/vtex-apps/cy-runner.git
+        run: git clone https://github.com/vtex-apps/cy-runner.git -b b2b/buyer-fix
 
       - name: Cache
         uses: actions/cache@v2
