@@ -1,28 +1,9 @@
 name: '[QE] Cypress Runner'
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Choose another branch to test'
-        required: true
-        default: master
-  schedule:
-    # 7:30 AM UTC = 3:30 AM EDT
-    - cron: '30 7 * * MON-FRI'
-  pull_request:
+  push:
     branches:
-      - master
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-    paths-ignore:
-      - docs/**
-      - README.md
-      - CHANGELOG.md
+      - test/cypress-v9.6.0
 
 concurrency:
   group: ${{ github.workflow }}
@@ -38,7 +19,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get Cypress Runner
         run: git clone https://github.com/vtex-apps/cy-runner.git
@@ -51,6 +31,7 @@ jobs:
 
       - name: Install Cypress
         run: |
+          git checkout test/cypress-v9.6.0
           rm -rf .git
           yarn install --frozen-lockfile
         working-directory: ./cy-runner
@@ -60,6 +41,7 @@ jobs:
         env:
           VTEX_QE: ${{ secrets.VTEX_QE }}
           NODE_NO_WARNINGS: 1
+          NO_COLORS: 1
 
       - name: Save results
         uses: actions/upload-artifact@master
